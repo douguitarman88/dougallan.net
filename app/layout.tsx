@@ -1,15 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import Script from 'next/script';
+import { Saira_Extra_Condensed, Open_Sans } from "next/font/google";
 import "./globals.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./resume.min.css";
+import "./siteold.css";
+//import "../scripts/resume.min.js";
+import Nav from '@/components/nav';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sairaSans = Saira_Extra_Condensed({
+  variable: "--font-saira-sans",
   subsets: ["latin"],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
   subsets: ["latin"],
+  weight: ['300', '400', '500', '600', '700', '800']
 });
 
 export const metadata: Metadata = {
@@ -19,8 +27,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+    <html lang="en" className={`${sairaSans.variable} ${openSans.variable}`}>
+      <body>
+        
+        <Nav />
+        
+        <div className="container-fluid p-0">
+          {children}
+        </div>
+
+        {/* <Script src="/scripts/resume.min.js" /> */}
+
+      </body>
     </html>
   );
 }
