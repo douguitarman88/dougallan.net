@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 const Nav = () => {
   return (
@@ -28,6 +29,10 @@ const Nav = () => {
              </li>
              <li className="nav-item">
                  <a className="nav-link js-scroll-trigger" href="/#guitar">Guitar</a>
+             </li>
+             <li className="nav-item">
+                {/* <Link href="/budget">Budget</Link> */}
+                 <a className="nav-link js-scroll-trigger" href="/budget">Budget</a>
              </li>
          </ul>
      </div>

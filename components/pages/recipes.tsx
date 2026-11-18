@@ -19,7 +19,8 @@ const Recipes = () => {
                 <p>- <a href="/Juicing/GetRecipe/5">CREAMY TUSCAN CHICKEN PASTA</a></p>
                 <p>- <a href="/Juicing/GetRecipe/9">Neapolitan/New York Style Pizza</a></p>
 
-        
+        <h3>Recipe Template</h3>
+        <p>- <a href="/recipetemplate">Recipe Template</a></p>
 
         
 

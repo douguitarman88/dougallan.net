@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Script from 'next/script';
 import { Saira_Extra_Condensed, Open_Sans } from "next/font/google";
-import "./globals.css";
+import "../globals.css"; //"./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./resume.min.css";
-import "./siteold.css";
+import "../resume.min.css";
+import "../siteold.css";
 //import "../scripts/resume.min.js";
 import Nav from '@/components/nav';
 
@@ -27,7 +27,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${sairaSans.variable} ${openSans.variable}`}>
+    // <html lang="en" className={`${sairaSans.variable} ${openSans.variable}`}>
+    <html lang="en">
       <body>
         
         <Nav />
