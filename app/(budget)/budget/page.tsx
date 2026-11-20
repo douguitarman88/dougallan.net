@@ -14,6 +14,7 @@ export default async function BudgetPage() {
   let budgetPage = null
   let budgetCategoryAmounts = null;
   let budgetRecurringIncome = null;
+  let transactions = null;
 
   if (user) {
     const { data: budgetData } = await supabase.rpc("getbudgetpage_budget", {
@@ -30,6 +31,11 @@ export default async function BudgetPage() {
       p_budgetid: 1
     })
     budgetRecurringIncome = budgetRecurringIncomeData
+
+    const { data: transactionsData } = await supabase.rpc("getbudgetpage_transactions", {
+      p_budgetid: 1
+    })
+    transactions = transactionsData
   }
 //console.log(budgetCategoryAmounts)
 
@@ -90,7 +96,7 @@ export default async function BudgetPage() {
 
         {/* --- INJECT THE RECHARTS LAYOUT INTERACTIVITY HERE --- */}
         {/* <SideBarTest /> */}
-      <DashboardCharts budgetPage={budgetPage} budgetCategoryAmounts={budgetCategoryAmounts} budgetRecurringIncome={budgetRecurringIncome} />
+      <DashboardCharts budgetPage={budgetPage} budgetCategoryAmounts={budgetCategoryAmounts} budgetRecurringIncome={budgetRecurringIncome} transactions={transactions} />
 
      </div>
   </main>

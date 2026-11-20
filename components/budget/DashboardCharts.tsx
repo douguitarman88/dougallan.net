@@ -18,6 +18,60 @@ import {
 import BudgetFlowbiteTable from '../../components/budget/BudgetFlowbiteTable';
 import FlowbiteTableExample from '../../components/budget/FlowbiteTableExample';
 
+interface DashboardChartsProps {
+  budgetPage: BudgetPage;
+  budgetCategoryAmounts: BudgetCategoryAmounts[];
+  budgetRecurringIncome: BudgetRecurringIncome[];
+  transactions: Transactions[];
+}
+
+interface BudgetPage {
+  budgetName: string;
+  budgetMonthYear: number; 
+  startBalance: number;
+  endBalance: number;
+  increaseInSavings: number;
+  decreaseInSavings: number; 
+  createDate: Date;
+}
+
+// I made these interface number properties all lowercase to match database columns. Otherwise it breaks. Why?
+interface BudgetCategoryAmounts {
+  categoryid: bigint; 
+  categoryname: string; 
+  plannedamount: number; 
+  actualamount: number;
+  onetimeamount: number; 
+  expensesdifference: number;
+  isrecurring: boolean;
+  recurringexpenseid: bigint;
+  recurringincomeid: bigint;
+}
+
+interface BudgetRecurringIncome {
+  categoryid: bigint;
+  categoryname: string; 
+  plannedamount: number; 
+  actualamount: number;
+  onetimeamount: number; 
+  incomedifference: number;
+  isrecurring: boolean;
+  recurringexpenseID: bigint;
+  recurringincomeID: bigint;
+}
+
+interface Transactions {
+  budgetid: bigint, 
+  transactionid: bigint, 
+  transactiondescription: string, 
+  categoryid: bigint, 
+  categoryname: string, 
+  amount: number, 
+  transactiondate: Date, 
+  isrecurring: boolean,
+  createdby: string 
+}
+
 // ==========================================
 // 📊 TIME-SERIES EXPERIMENTAL DATASETS
 // ==========================================
@@ -88,7 +142,12 @@ const datasets = {
 const COLORS = ["#3c50e0", "#80caee", "#f2994a", "#1c2434"];
 type FilterType = "7days" | "month" | "year";
 
-export default function DashboardCharts({ budgetPage, budgetCategoryAmounts, budgetRecurringIncome }) {
+export default function DashboardCharts({ 
+  budgetPage, 
+  budgetCategoryAmounts, 
+  budgetRecurringIncome,
+  transactions
+}: DashboardChartsProps) {
   const [hasMounted, setHasMounted] = useState(false);
   // Track selected dropdown period state
   const [timeFilter, setTimeFilter] = useState<FilterType>("month");
@@ -114,7 +173,7 @@ console.log('Income One Time', incomeOneTime)
 
 const budgetData = {
   mainSales: [
-      { name: "", startBalance: budgetPage?.startbalance, endBalance: budgetPage?.endbalance, difference: (Number(budgetPage?.startbalance) - Number(budgetPage?.endbalance)) }
+      { name: "", startBalance: budgetPage?.startBalance, endBalance: budgetPage?.endBalance, difference: (Number(budgetPage?.startBalance) - Number(budgetPage?.endBalance)) }
     ]
 };
 const budgetDataExpenses = {
@@ -132,8 +191,8 @@ const budgetDataIncome = {
     ]
 }
 
-let fetchedBudgets: any[] = [];
-fetchedBudgets = budgetCategoryAmounts;
+let fetchedTransactions: Transactions[];
+fetchedTransactions = transactions;
 
   useEffect(() => {
     setHasMounted(true);
@@ -261,18 +320,18 @@ fetchedBudgets = budgetCategoryAmounts;
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         
         {/* DONUT GRAPH */}
-        <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-6">
+        {/* <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-6">
           <h3 className="text-lg font-bold text-[#1c2434] mb-1">Recurring Expenses</h3>
           <p className="text-xs text-[#64748b] mb-4">Recurring Expenses</p>
           
           <div className="h-64 w-full flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
-              {/* <BudgetFlowbiteTable rawRows={fetchedBudgets} /> */}
               <FlowbiteTableExample rawRows={fetchedBudgets} />
             </ResponsiveContainer>
           </div>
-        </div>
-<FlowbiteTableExample rawRows={fetchedBudgets} />
+        </div> */}
+        <FlowbiteTableExample rawRows={fetchedTransactions} />
+
         {/* STANDARD PIE GRAPH */}
         <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-6">
           <h3 className="text-lg font-bold text-[#1c2434] mb-1">Daily Expenses</h3>
