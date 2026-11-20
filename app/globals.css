@@ -50,6 +50,4 @@ a {
 /* app/globals.css */
 @import "tailwindcss";
 
-/* 💡 REQUIRED FOR TAILWIND V4 COMPATIBILITY */
-@import "flowbite-react/plugin/tailwindcss";
-@source "../.flowbite-react/class-list.json";
+

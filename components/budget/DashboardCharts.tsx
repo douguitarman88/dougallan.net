@@ -15,7 +15,6 @@ import {
   Cell
 } from "recharts";
 
-import BudgetFlowbiteTable from '../../components/budget/BudgetFlowbiteTable';
 import FlowbiteTableExample from '../../components/budget/FlowbiteTableExample';
 
 interface DashboardChartsProps {
