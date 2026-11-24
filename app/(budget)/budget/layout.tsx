@@ -53,11 +53,7 @@ export default async function DashboardLayout({
   return (
     <html lang="en">
       <head>
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css"
-          precedence="default"
-        />
+        
       </head>
       <body className="bg-slate-50 text-slate-900 antialiased">
         <div className="flex h-screen w-screen overflow-hidden bg-[#f1f5f9] text-[#64748b] font-sans antialiased">
@@ -244,13 +240,9 @@ export default async function DashboardLayout({
 
         {/* <DashboardShell><main>{children}</main></DashboardShell> */}
         </div>
-        
-        <Script 
-          src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js" 
-          strategy="afterInteractive" 
-        />
-
+      
       </body>
     </html>
+    
   );
 }

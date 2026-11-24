@@ -15,8 +15,6 @@ import {
   Cell
 } from "recharts";
 
-import FlowbiteTableExample from '../../components/budget/FlowbiteTableExample';
-
 interface DashboardChartsProps {
   budgetPage: BudgetPage;
   budgetCategoryAmounts: BudgetCategoryAmounts[];
@@ -37,6 +35,7 @@ interface BudgetPage {
 // I made these interface number properties all lowercase to match database columns. Otherwise it breaks. Why?
 interface BudgetCategoryAmounts {
   categoryid: bigint; 
+  id: bigint;
   categoryname: string; 
   plannedamount: number; 
   actualamount: number;
@@ -49,6 +48,7 @@ interface BudgetCategoryAmounts {
 
 interface BudgetRecurringIncome {
   categoryid: bigint;
+  id: bigint;
   categoryname: string; 
   plannedamount: number; 
   actualamount: number;
@@ -59,16 +59,26 @@ interface BudgetRecurringIncome {
   recurringincomeID: bigint;
 }
 
-interface Transactions {
-  budgetid: bigint, 
-  transactionid: bigint, 
-  transactiondescription: string, 
-  categoryid: bigint, 
-  categoryname: string, 
+interface RecurringExpense {
+  id: bigint;
+  categoryname: string; 
+  plannedamount: number; 
+  actualamount: number;
+}
+
+interface RecurringIncome {
+  id: bigint;
+  categoryname: string; 
+  plannedamount: number; 
+  actualamount: number;
+}
+
+interface Transaction {
+  id: bigint, 
+  transactionDescription: string, 
+  categoryName: string, 
   amount: number, 
-  transactiondate: Date, 
-  isrecurring: boolean,
-  createdby: string 
+  transactionDate: Date
 }
 
 // ==========================================
@@ -141,6 +151,20 @@ const datasets = {
 const COLORS = ["#3c50e0", "#80caee", "#f2994a", "#1c2434"];
 type FilterType = "7days" | "month" | "year";
 
+// NEW
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+
+// const rows = [
+//   { id: 1, name: 'Ada Lovelace', email: 'ada@example.com' },
+//   { id: 2, name: 'Grace Hopper', email: 'grace@example.com' },
+// ];
+
+// const columns: GridColDef[] = [
+//   { field: 'name', headerName: 'Name', width: 180 },
+//   { field: 'email', headerName: 'Email', width: 240 },
+// ];
+// END NEW
+
 export default function DashboardCharts({ 
   budgetPage, 
   budgetCategoryAmounts, 
@@ -153,6 +177,127 @@ export default function DashboardCharts({
 // console.log('Dash Charts comp', budgetPage)
 // console.log('Start Bal', budgetPage?.startbalance)
 // console.log('Budget Cat Amounts', budgetCategoryAmounts)
+
+//console.table(transactions)
+// NEW KEEPER
+// interface Transaction {
+//   id: bigint;
+//   transactionDate: Date;
+//   transactionAmount: number;
+//   transactionDescription: string;
+//   category: string;
+//   isRecurring: boolean;
+// }
+
+const rows: Transaction[] = [];
+const rowsRecurringExp: RecurringExpense[] = [];
+const rowsDailyExp: RecurringExpense[] = [];
+const rowsRecurringInc: RecurringIncome[] = [];
+const rowsOtherInc: RecurringIncome[] = [];
+
+for (const transaction of transactions) {
+  rows.push({
+    id: transaction.transactionid,
+    transactionDate: transaction.transactiondate,
+    amount: transaction.amount,
+    transactionDescription: transaction.transactiondescription,
+    categoryName: transaction.categoryname
+  });
+}
+
+const columns: GridColDef[] = [
+  //{ field: 'id', headerName: 'id', width: 180 },
+  { field: 'transactionDate', headerName: 'Date', width: 240 },
+  { field: 'amount', headerName: 'Amount', width: 240 },
+  { field: 'transactionDescription', headerName: 'Description', width: 240 },
+  { field: 'categoryName', headerName: 'Category', width: 240 }
+];
+
+// Recurring Expenses
+for (const bca of budgetCategoryAmounts) {
+
+  if (bca.isrecurring === true) {
+    rowsRecurringExp.push({
+      id: bca.categoryid,
+      categoryname: bca.categoryname,
+      plannedamount: bca.plannedamount,
+      actualamount: bca.actualamount
+    });
+  }
+}
+
+const columnsRecurringExp: GridColDef[] = [
+  //{ field: 'id', headerName: 'id', width: 180 },
+  { field: 'categoryname', headerName: 'Category', width: 240 },
+  { field: 'plannedamount', headerName: 'Amount', width: 240 },
+  { field: 'actualamount', headerName: 'Amount', width: 240 }
+];
+// END: Recurring Expenses
+
+// Daily Expenses
+for (const bca of budgetCategoryAmounts) {
+
+  if (bca.isrecurring === false) {
+    rowsDailyExp.push({
+      id: bca.categoryid,
+      categoryname: bca.categoryname,
+      plannedamount: bca.plannedamount,
+      actualamount: bca.actualamount
+    });
+  }
+}
+
+const columnsDailyExp: GridColDef[] = [
+  //{ field: 'id', headerName: 'id', width: 180 },
+  { field: 'categoryname', headerName: 'Category', width: 240 },
+  { field: 'plannedamount', headerName: 'Amount', width: 240 },
+  { field: 'actualamount', headerName: 'Amount', width: 240 }
+];
+// END: Daily Expenses
+
+// Recurring Income
+for (const bca of budgetRecurringIncome) {
+
+  if (bca.isrecurring === true) {
+    rowsRecurringInc.push({
+      id: bca.categoryid,
+      categoryname: bca.categoryname,
+      plannedamount: bca.plannedamount,
+      actualamount: bca.actualamount
+    });
+  }
+}
+
+const columnsRecurringInc: GridColDef[] = [
+  //{ field: 'id', headerName: 'id', width: 180 },
+  { field: 'categoryname', headerName: 'Category', width: 240 },
+  { field: 'plannedamount', headerName: 'Amount', width: 240 },
+  { field: 'actualamount', headerName: 'Amount', width: 240 }
+];
+// END: Recurring Income
+
+// Other Income
+for (const bca of budgetRecurringIncome) {
+
+  if (bca.isrecurring === false) {
+    rowsOtherInc.push({
+      id: bca.categoryid,
+      categoryname: bca.categoryname,
+      plannedamount: bca.plannedamount,
+      actualamount: bca.actualamount
+    });
+  }
+}
+
+const columnsOtherInc: GridColDef[] = [
+  // { field: 'id', headerName: 'id', width: 180 },
+  { field: 'categoryname', headerName: 'Category', width: 240 },
+  { field: 'plannedamount', headerName: 'Amount', width: 240 },
+  { field: 'actualamount', headerName: 'Amount', width: 240 }
+];
+// END: Other Income
+
+// END NEW
 
 const expensePlanned = budgetCategoryAmounts.reduce((sum, item) => sum + (item.plannedamount || 0), 0);
 const expenseActual = budgetCategoryAmounts.reduce((sum, item) => sum + (item.actualamount || 0), 0);
@@ -189,9 +334,6 @@ const budgetDataIncome = {
     { name: "Income One Time", value: budgetRecurringIncome?.reduce((sum, item) => sum + (item.onetimeamount || 0), 0) }
     ]
 }
-
-let fetchedTransactions: Transactions[];
-fetchedTransactions = transactions;
 
   useEffect(() => {
     setHasMounted(true);
@@ -317,21 +459,63 @@ fetchedTransactions = transactions;
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        
-        {/* DONUT GRAPH */}
-        {/* <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-6">
-          <h3 className="text-lg font-bold text-[#1c2434] mb-1">Recurring Expenses</h3>
-          <p className="text-xs text-[#64748b] mb-4">Recurring Expenses</p>
-          
-          <div className="h-64 w-full flex items-center justify-center">
-            <ResponsiveContainer width="100%" height="100%">
-              <FlowbiteTableExample rawRows={fetchedBudgets} />
-            </ResponsiveContainer>
-          </div>
-        </div> */}
-        <FlowbiteTableExample rawRows={fetchedTransactions} />
+        <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-6">
+          <h2>Recurring Expense</h2>
+          <DataGrid rows={rowsRecurringExp} columns={columnsRecurringExp} />
+        </div>
+        <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-6">
+          <h2>Daily Expense</h2>
+          <DataGrid rows={rowsDailyExp} columns={columnsDailyExp} />
+        </div>
+      </div>
 
-        {/* STANDARD PIE GRAPH */}
+      {/* <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-12">
+          <h2>Recurring Expense</h2>
+          <DataGrid rows={rowsRecurringExp} columns={columnsRecurringExp} />
+        </div>          
+      </div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-6">
+        <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-12">
+          <h2>Daily Expense</h2>
+          <DataGrid rows={rowsDailyExp} columns={columnsDailyExp} />
+        </div>          
+      </div> */}
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-6">
+          <h2>Recurring Income</h2>
+          <DataGrid rows={rowsRecurringInc} columns={columnsRecurringInc} />
+        </div>
+        <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-6">
+          <h2>Other Income (Leanne weddings, etc)</h2>
+          <DataGrid rows={rowsOtherInc} columns={columnsOtherInc} />
+        </div>
+      </div>
+      
+      {/* <div className="grid grid-cols-1 gap-6 lg:grid-cols-6">
+        <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-12">
+          <h2>Recurring Income</h2>
+          <DataGrid rows={rowsRecurringInc} columns={columnsRecurringInc} />
+        </div>          
+      </div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-6">
+        <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-12">
+          <h2>Other Income (Leanne weddings, etc)</h2>
+          <DataGrid rows={rowsOtherInc} columns={columnsOtherInc} />
+        </div>          
+      </div> */}
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        {/* NEW TRANSACTIONS: Data Grid MUI */}
+        <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-12">
+          <h2>Transactions</h2>
+          <DataGrid rows={rows} columns={columns} />
+        </div>          
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          {/* STANDARD PIE GRAPH */}
         <div className="col-span-1 rounded-sm border border-[#e2e8f0] bg-white p-6 shadow-xs lg:col-span-6">
           <h3 className="text-lg font-bold text-[#1c2434] mb-1">Daily Expenses</h3>
           <p className="text-xs text-[#64748b] mb-4">Daily Expenses</p>
@@ -357,7 +541,6 @@ fetchedTransactions = transactions;
             </ResponsiveContainer>
           </div>
         </div>
-
       </div>
       
       {/* END MINE */}
